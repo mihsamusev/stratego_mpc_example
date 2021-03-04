@@ -1,0 +1,7 @@
+learning-method: 4
+good-runs: 200
+total-runs: 500
+runs-pr-state: 100
+eval-runs: 100
+max-iterations: 30
+filter: 0
