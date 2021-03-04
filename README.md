@@ -10,6 +10,8 @@ Describes a toy example traffic control of one way road intersections based on _
 
 Corresponding UPPAAL stratego model is found in `uppaal/model.xml`. The task of the MPC control loop iteratively to initialize the model with updated/measured queue lengths `S` and `E`, and calculate optimal control strategy up to horizon. For simplicity, measureable disturbances such as vehicle inflow/outflow rates `r` are not inserted back into the model and stay costant.
 
+To run the example use `example.py` script, the only thing you need to customize is the path to UPPAAL Stratego `verifyta` stored in `verifytaPath` variable. 
+
 ## Control loop
 
 <p align="center">
