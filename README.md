@@ -8,7 +8,7 @@ Describes a toy example traffic control of one way road intersections based on _
   <img width="400" src="docs/plant.png">
 </p>
 
-Corresponding UPPAAL stratego model is found in `uppaal/model.xml`. The task of the MPC control loop iteratively to initialize the model with updated/measured queue lengths `S` and `E`, and calculate optimal control strategy up to horizon. For simplicity, measureable disturbances such as vehicle inflow/outflow rates `r` are not inserted back into the model and stay costant.
+Corresponding UPPAAL stratego model is found in `uppaal/model.xml`. The task of the MPC control loop iteratively to re-build the model with updated/measured queue lengths `S` and `E`, and calculate optimal control strategy up to horizon. This re-building happends by using `uppaal/model_template.xml` where important variables are commented out with a specific patterns/tags known to the user. `strategoutils.py` then allows to replace those tags with values. For simplicity of the example, measureable disturbances such as vehicle inflow/outflow rates `r` are not inserted back into the model and stay costant.
 
 To run the example use `example.py` script, the only thing you need to customize is the path to UPPAAL Stratego `verifyta` stored in `verifytaPath` variable. 
 
@@ -24,8 +24,8 @@ To accomodate shown MPC loop, the project conssts of couple of files:
 - `strategoutils.py` small library of generic helper functions to interface with UPPAAL Stratego, used to build interfaces for particular concrete like `model_interface.py`.
 - `model_interface.py` leverages `StrategoController` and `strategoutils.py` functions to create the interface to exclusively interact with `model_template.xml`.
 - `example.py` that puts it all together and showcases the MPC control loop
-- [optional] `*.yaml` configuration file with `verifyta` arguments
-- [optional] `*.q` file specifying Stratego querry
+- [optional] `*.yaml` configuration file with `verifyta` arguments, in the example default arguments are used
+- [optional] `*.q` file specifying Stratego query, in the example query inside `model_template.xml` will be used
 
 This framework allows to insert values in 2 steps, 
 
