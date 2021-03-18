@@ -1,5 +1,6 @@
-from shutil import copyfile
+import shutil
 from subprocess import Popen, PIPE
+import os
 import re
 import yaml
 
@@ -29,6 +30,24 @@ def insert_to_model(modelfile, tag, inserted):
         f.seek(0)
         f.write(text)
         f.truncate()
+
+def split_duration_action(tuples, MAX_DURATION=9000):
+    """convert sequence of actions and their durations from
+    'simulate 1 [<=HORIZON] {action}' expression of strateg
+    """
+    result = []
+    if len(tuples) == 1: # can only happen if always variable == 0
+        result.append((MAX_DURATION, 0))
+    elif len(tuples) == 2: # can only hapen of always variable != 0
+        action = tuples[1][1]
+        result.append((MAX_DURATION, action))
+    else:
+        for i in range(1, len(tuples)):
+            duration = tuples[i][0] - tuples[i-1][0] 
+            action = tuples[i][1]
+            if duration > 0:
+                result.append((duration, action))
+    return result
 
 def get_first_action_duration(tuples, MAX_DURATION=9000):
     """
@@ -109,23 +128,29 @@ class StrategoController:
     Abstract controller class to interface with UPPAAL Stratego 
     through python
     """
-    def __init__(self, templatefile):
+    def __init__(self, templatefile, cleanup=True):
         self.templatefile = templatefile
         self.simulationfile = templatefile.strip(".xml") + "_sim.xml"
+        self.cleanup = cleanup
 
     def init_simfile(self):
         """
         Make a copy of a template file where data of
         specific variables is inserted
         """
-        copyfile(self.templatefile, self.simulationfile)
+        shutil.copyfile(self.templatefile, self.simulationfile)
+
+    def remove_simfile(self):
+        """Clean created temporary files after the simulation is finished
+        """
+        os.remove(self.simulationfile)       
 
     def debug_copy(self, debugFilename):
         """
         copy UPPAAL simulationfile.xml file for manual
         debug in Stratego
         """
-        copyfile(self.simulationfile, debugFilename)
+        shutil.copyfile(self.simulationfile, debugFilename)
 
     def insert_state(self):
         """
@@ -141,4 +166,6 @@ class StrategoController:
         """
         output = run_stratego(self.simulationfile, queryfile,
             configfile, verifytaPath)
+        if self.cleanup:
+            self.remove_simfile()
         return output

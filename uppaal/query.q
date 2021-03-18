@@ -3,7 +3,7 @@
 /*
 
 */
-strategy opt = minE(Q) [<=HORIZON]{}->{E,S, phase}:<>time>=HORIZON
+strategy opt = minE(Q) [<=HORIZON]:<>time>=HORIZON
 
 /*
 

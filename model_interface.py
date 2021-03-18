@@ -5,7 +5,7 @@ class QueueLengthController(StrategoController):
     def __init__(self, templatefile):
         super().__init__(templatefile)
         # variables to insert into the simulation *.xml file
-        self.stateNames = ["E", "S"]
+        self.stateNames = ["E", "S", "phase"]
          # tag left in model_template.xml
         self.tagRule = "//TAG_{}"
 
@@ -28,5 +28,5 @@ class QueueLengthController(StrategoController):
         resultlog = super().run(queryfile, configfile, verifytaPath)
 
         tpls = strategoutils.get_output_tuples(resultlog)
-        phase, duration = strategoutils.get_first_action_duration(tpls[0])
-        return phase, duration
+        durations_phases = strategoutils.split_duration_action(tpls[0])
+        return durations_phases

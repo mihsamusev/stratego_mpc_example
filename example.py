@@ -28,13 +28,14 @@ if __name__ == "__main__":
     E = 0
     S = 0
     phase = 0
+    MIN_GREEN = 4
 
-    templatePath = "uppaal/model_template.xml"
-    verifytaPath = "$HOME/Documents/stratego/bin/bin-Linux/verifyta"
+    templatePath = "uppaal/nonsync_model_template.xml"
+    verifytaPath = "verifyta"
     controller = QueueLengthController(templatePath)
     
     L = 20 # simulation length
-    K = 2  # every K we will do MPC
+    K = 5  # every K we will do MPC
     cost = 0
     for k in range(L):
         # run plant
@@ -49,12 +50,20 @@ if __name__ == "__main__":
             controller.init_simfile()
             
             # insert current state into simulation template
-            state = [E, S]
+            state = [E, S, phase]
             controller.insert_state(state)
+            
+            # to debug errors from verifyta one can save intermediate simulation file
+            # controller.debug_copy(templatePath.replace(".xml", "_debug.xml"))
 
-            # run a verifyta querry
-            nextPhase, duration = controller.run(verifytaPath=verifytaPath)
-        
+            # run a verifyta querry to simulate optimal strategy
+            durations_phases = controller.run(verifytaPath=verifytaPath)
+
+            # switch phases if optimal solution changes phase after minimum green time
+            duration, nextPhase = durations_phases[0]
+            if duration > MIN_GREEN and len(durations_phases) > 1:
+                duration, nextPhase = durations_phases[1]
+
             print("  Decison: phases {} to {} for {}s".format(phase, nextPhase, duration))
             phase = nextPhase
         
