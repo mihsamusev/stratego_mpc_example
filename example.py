@@ -1,6 +1,11 @@
 import random
 from model_interface import QueueLengthController
 
+VERIFYTA_PATH = "verifyta"
+TEMPLATE_FILE = "uppaal/nonsync_model_template.xml"
+QUERY_FILE = "uppaal/query.q"
+MIN_GREEN = 4
+
 def intersection_plant(E, S, phase, MAX_ADD=2, MAX_REMOVE=2):
     """
     very simple plant model  that adds or removes random number of
@@ -23,24 +28,25 @@ def intersection_plant(E, S, phase, MAX_ADD=2, MAX_REMOVE=2):
 
     return E, S
 
-if __name__ == "__main__":
+def run():
+    controller = QueueLengthController(
+        templatefile=TEMPLATE_FILE,
+        state_names=["E", "S", "phase"])
+
     # initial plant state
     E = 0
     S = 0
     phase = 0
-    MIN_GREEN = 4
-
-    templatePath = "uppaal/nonsync_model_template.xml"
-    verifytaPath = "verifyta"
-    controller = QueueLengthController(templatePath)
-    
-    L = 20 # simulation length
-    K = 5  # every K we will do MPC
     cost = 0
+
+    L = 30 # simulation length
+    K = 4  # every K we will do MPC
+
     for k in range(L):
         # run plant
         E, S = intersection_plant(E, S, phase)
         cost += E * E + S * S
+
         # report
         print("Step: {}, E: {} cars, S: {} cars, cost: {}".format(k, E, S, cost))
 
@@ -50,20 +56,30 @@ if __name__ == "__main__":
             controller.init_simfile()
             
             # insert current state into simulation template
-            state = [E, S, phase]
+            state = {
+                "E": E,
+                "S": S,
+                "phase": phase
+            }
             controller.insert_state(state)
-            
+
             # to debug errors from verifyta one can save intermediate simulation file
             # controller.debug_copy(templatePath.replace(".xml", "_debug.xml"))
 
             # run a verifyta querry to simulate optimal strategy
-            durations_phases = controller.run(verifytaPath=verifytaPath)
+            durations, phase_seq = controller.run(
+                queryfile=QUERY_FILE,
+                verifyta_path=VERIFYTA_PATH)
 
-            # switch phases if optimal solution changes phase after minimum green time
-            duration, nextPhase = durations_phases[0]
-            if duration > MIN_GREEN and len(durations_phases) > 1:
-                duration, nextPhase = durations_phases[1]
+            # switch phases if optimal solution changes phase
+            # after minimum green time, stay otherwise
+            next_duration, next_phase = durations[0], phase_seq[0]
+            if next_duration == MIN_GREEN and len(phase_seq) > 1:
+                next_duration, next_phase = durations[1], phase_seq[1]
 
-            print("  Decison: phases {} to {} for {}s".format(phase, nextPhase, duration))
-            phase = nextPhase
-        
+            print("  Decison: phases {} to {} for {}s".format(
+                phase, next_phase, next_duration))
+            phase = next_phase
+
+if __name__ == "__main__":
+    run()

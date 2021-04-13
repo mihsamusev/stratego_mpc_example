@@ -7,7 +7,7 @@ int S = //TAG_S;        // southbound queue length
 int phase = //TAG_phase;    // 0 east green, 1 south green
 
 // disturbance modelling, rates of vehicle in/outflows
-const int rE=1, rS=1, rW=2, rN=2;
+const int rE=0, rS=0, rW=1, rN=1;
 
 // time constants and clocks
 const int HORIZON = 60;

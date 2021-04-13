@@ -31,7 +31,12 @@ This framework allows to insert values in 2 steps,
 
 ## Dependencies
 
-Tested in Python 3.8, dependecies listed in `requirements.txt` and can be installed by either `conda install --file requirements.txt` or `pip install -r requirements.txt`
+This example uses helper library [strategoutil](https://github.com/mihsamusev/strategoutil.git)
+```
+git clone https://github.com/mihsamusev/strategoutil.git
+cd strategoutil
+pip install -e .
+```
 
 ## Some inserting tricks
-Maybe its not a good idea to crete tags that contain `<>` characters, since in `*.xml` file they are written as `&lt;` or `&lt;`, which might lead to confusion. A simplest alternative is just to add `TAG_` in front of your variable name.
+Maybe its not a good idea to crete tags that contain `<>` characters, since in `*.xml` file they are written as `&lt;` or `&lt;`, which might lead to confusion. A simplest alternative is just to add `\\TAG_` in front of your variable name.

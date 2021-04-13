@@ -1,32 +1,30 @@
-import strategoutils
-from strategoutils import StrategoController
+import strategoutil as sutil
+from strategoutil import StrategoController
 
 class QueueLengthController(StrategoController):
-    def __init__(self, templatefile):
+    def __init__(self, templatefile, state_names):
         super().__init__(templatefile)
         # variables to insert into the simulation *.xml file
-        self.stateNames = ["E", "S", "phase"]
+        self.state_names = state_names
          # tag left in model_template.xml
         self.tagRule = "//TAG_{}"
 
-    def insert_state(self, stateValues):
+    def insert_state(self, state_dict):
         """
         Uses tag rule to insert state values of [E, S, phase]
         at the appropriate position in the simulation *.xml file
         """
-        for name, value in zip(self.stateNames, stateValues):
+        for name, value in state_dict.items():
             tag = self.tagRule.format(name)
-            strategoutils.insert_to_model(self.simulationfile,
-                tag, str(value))
-    
-    def run(self, queryfile=None, configfile=None, verifytaPath="verifyta"):
-        """
-        Builds on top of base class run() function, and does
-        post-process verifyta result log to output
-        first action and its duration
-        """
-        resultlog = super().run(queryfile, configfile, verifytaPath)
+            value = str(value)
+            sutil.insert_to_modelfile(
+                self.simulationfile, tag, value)
 
-        tpls = strategoutils.get_output_tuples(resultlog)
-        durations_phases = strategoutils.split_duration_action(tpls[0])
-        return durations_phases
+    def run(self, queryfile="", learning_args={}, verifyta_path="verifyta"):
+        output = super().run(queryfile, learning_args, verifyta_path)
+
+        # parse output
+        tpls = sutil.get_int_tuples(output)
+        result = sutil.get_duration_action(tpls, MAX_TIME=1000)
+        durations, actions = list(zip(*result)) 
+        return durations, actions
