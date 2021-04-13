@@ -2,7 +2,7 @@ import random
 from model_interface import QueueLengthController
 
 VERIFYTA_PATH = "verifyta"
-TEMPLATE_FILE = "uppaal/nonsync_model_template.xml"
+TEMPLATE_FILE = "uppaal/model_template.xml"
 QUERY_FILE = "uppaal/query.q"
 MIN_GREEN = 4
 
