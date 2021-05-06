@@ -58,4 +58,5 @@ To accomodate shown MPC loop, the project consists of couple of files:
 
 
 ## Some inserting tricks
-Maybe its not a good idea to crete tags that contain `<>` characters, since in `*.xml` file they are written as `&lt;` or `&lt;`, which might lead to confusion. A simplest alternative is just to add `\\TAG_` in front of your variable name.
+Currently, the MPC library looks for the tags of form `//TAG_` followed by the variable name.
+Maybe its not a good idea to crete tags that contain `<>` characters, since in `*.xml` file they are written as `&lt;` or `&lt;`, which might lead to confusion. A simplest alternative is just to add `//TAG_` in front of your variable name.
