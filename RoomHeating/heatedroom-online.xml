@@ -1,0 +1,305 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE nta PUBLIC '-//Uppaal Team//DTD Flat System 1.1//EN' 'http://www.it.uu.se/research/group/darts/uppaal/flat-1_2.dtd'>
+<nta>
+	<declaration>const double Tg = 21.0;
+const double Tenv = 15.0;
+const double H = 0.04; // power of heater
+const double Aclosed = 0.002; // heat transfer of closed window
+const double Aopen = 0.004; // when open window
+const int Period = 15;
+const int Horizon = 10*Period;
+const int hour = 60;
+
+clock t = //TAG_t;
+clock T = //TAG_T;
+clock D = //TAG_D;
+clock x;
+
+clock w = //TAG_w;
+int i = //TAG_i;
+
+double A = Aclosed;
+
+int heatLoc = //TAG_heatLoc;
+int winLoc =//TAG_winLoc;
+
+/*
+double Tenv(double t){
+    return 7.0*sin(2.0*3.141*t/24.0/60.0)+19.0;
+}
+*/</declaration>
+	<template>
+		<name>Monitor</name>
+		<location id="id0" x="0" y="0">
+			<label kind="invariant" x="-42" y="17">D'==(Tg-T)*(Tg-T)</label>
+		</location>
+		<location id="id1" x="0" y="-93">
+			<name x="-34" y="-76">__RESET__</name>
+		</location>
+		<init ref="id0"/>
+		<transition>
+			<source ref="id1"/>
+			<target ref="id1"/>
+			<label kind="assignment" x="-51" y="-238">t=0,
+x=0,w=0,i=0,
+A=0.0,
+D=0,
+heatLoc=0,winLoc=0</label>
+			<nail x="-42" y="-144"/>
+			<nail x="51" y="-144"/>
+		</transition>
+	</template>
+	<template>
+		<name x="5" y="5">Room</name>
+		<location id="id2" x="59" y="-170">
+			<name x="25" y="-153">HeatOff</name>
+			<label kind="invariant" x="0" y="-136">x&lt;=Period &amp;&amp;
+T'==(Tenv-T)*A</label>
+		</location>
+		<location id="id3" x="221" y="-170">
+			<name x="195" y="-153">HeatOn</name>
+			<label kind="invariant" x="187" y="-136">x&lt;=Period &amp;&amp;
+T'==(Tenv-T)*A+H</label>
+		</location>
+		<location id="id4" x="136" y="-255">
+			<urgent/>
+		</location>
+		<location id="id5" x="-42" y="-238">
+			<urgent/>
+		</location>
+		<location id="id6" x="314" y="-238">
+			<urgent/>
+		</location>
+		<init ref="id4"/>
+		<transition>
+			<source ref="id5"/>
+			<target ref="id2"/>
+			<label kind="assignment" x="0" y="-229">x=0</label>
+		</transition>
+		<transition>
+			<source ref="id6"/>
+			<target ref="id3"/>
+			<label kind="assignment" x="255" y="-229">x=0</label>
+		</transition>
+		<transition controllable="false">
+			<source ref="id3"/>
+			<target ref="id6"/>
+			<label kind="guard" x="323" y="-195">x==Period</label>
+			<nail x="314" y="-170"/>
+		</transition>
+		<transition controllable="false">
+			<source ref="id2"/>
+			<target ref="id5"/>
+			<label kind="guard" x="-127" y="-195">x==Period</label>
+			<nail x="-42" y="-170"/>
+			<nail x="-42" y="-221"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id3"/>
+			<label kind="guard" x="153" y="-272">heatLoc==1</label>
+			<nail x="221" y="-255"/>
+		</transition>
+		<transition>
+			<source ref="id4"/>
+			<target ref="id2"/>
+			<label kind="guard" x="25" y="-272">heatLoc==0</label>
+			<nail x="59" y="-255"/>
+		</transition>
+		<transition>
+			<source ref="id3"/>
+			<target ref="id2"/>
+			<label kind="guard" x="102" y="-187">x==Period</label>
+			<label kind="assignment" x="102" y="-170">x=0,
+heatLoc=0</label>
+		</transition>
+		<transition>
+			<source ref="id2"/>
+			<target ref="id3"/>
+			<label kind="guard" x="102" y="-238">x==Period</label>
+			<label kind="assignment" x="102" y="-221">x=0,
+heatLoc=1</label>
+			<nail x="93" y="-221"/>
+			<nail x="187" y="-221"/>
+		</transition>
+	</template>
+	<template>
+		<name>Window</name>
+		<declaration>const int L=4;
+
+const int closedL[L]={ 6*hour, 11*hour, 16*hour, 19*hour };
+const int closedU[L]={ 7*hour, 12*hour, 17*hour, 23*hour };
+
+const int openL[L]={ 7*hour, 12*hour, 18*hour, 24*hour };
+const int openU[L]={ 8*hour, 13*hour, 21*hour, 24*hour };
+
+</declaration>
+		<location id="id7" x="204" y="0">
+			<name x="212" y="-25">Open</name>
+			<label kind="invariant" x="221" y="-8">w&lt;=openU[i]</label>
+		</location>
+		<location id="id8" x="0" y="0">
+			<name x="-68" y="-25">Closed</name>
+			<label kind="invariant" x="-119" y="-8">w&lt;=closedU[i]</label>
+		</location>
+		<location id="id9" x="102" y="-110">
+			<urgent/>
+		</location>
+		<init ref="id9"/>
+		<transition controllable="false">
+			<source ref="id9"/>
+			<target ref="id7"/>
+			<label kind="guard" x="119" y="-127">winLoc==1</label>
+			<nail x="204" y="-110"/>
+		</transition>
+		<transition controllable="false">
+			<source ref="id9"/>
+			<target ref="id8"/>
+			<label kind="guard" x="0" y="-127">winLoc==0</label>
+			<nail x="0" y="-110"/>
+		</transition>
+		<transition controllable="false">
+			<source ref="id7"/>
+			<target ref="id8"/>
+			<label kind="guard" x="17" y="51">i==L-1 &amp;&amp; w&gt;=openL[i]</label>
+			<label kind="assignment" x="18" y="68">A=Aclosed,i=0,w=0,
+winLoc=0</label>
+			<nail x="204" y="68"/>
+			<nail x="0" y="68"/>
+		</transition>
+		<transition controllable="false">
+			<source ref="id7"/>
+			<target ref="id8"/>
+			<label kind="guard" x="25" y="-17">i&lt;L-1 &amp;&amp; w&gt;=openL[i]</label>
+			<label kind="assignment" x="25" y="0">A=Aclosed,i++,
+winLoc=0</label>
+		</transition>
+		<transition controllable="false">
+			<source ref="id8"/>
+			<target ref="id7"/>
+			<label kind="guard" x="25" y="-85">w&gt;=closedL[i]</label>
+			<label kind="assignment" x="25" y="-68">A=Aopen,
+winLoc=1</label>
+			<nail x="17" y="-68"/>
+			<nail x="187" y="-68"/>
+		</transition>
+	</template>
+	<system>system Room, Window, Monitor;
+    </system>
+	<queries>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>simulate 100 [&lt;=30*Period] { T, Window.Open+15, Room.HeatOn+17 }</formula>
+			<comment>takes about 10s</comment>
+		</query>
+		<query>
+			<formula>simulate 10 [&lt;=30*Period] { D }</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E[&lt;=15*Period; 1000](max:D)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>simulate 1 [&lt;=24*hour] { T, Window.Open+14, Room.HeatOn+16 }</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E[&lt;=24*hour; 100000](max:D)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>simulate 100 [&lt;=15*Period] { T, Window.Open+15, Room.HeatOn+17 }</formula>
+			<comment>random controller: temperature diverges (mostly up)
+even though the window is closed all the time.</comment>
+		</query>
+		<query>
+			<formula>strategy opt = minE (D) [&lt;=15*Period]: &lt;&gt; t==15*Period</formula>
+			<comment>this one learns against flat window profile (the first window opening is much later)
+hybrid discretization step=1.0
+learning method=splitting, 100, 100, 100, 50   =&gt; 30000runs in 23s
+</comment>
+		</query>
+		<query>
+			<formula>simulate 100 [&lt;=15*Period] { T, Window.Open+15, Room.HeatOn+17 } under opt</formula>
+			<comment>alternates around 21, very nicely</comment>
+		</query>
+		<query>
+			<formula>simulate 10 [&lt;=15*Period] { D } under opt</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E[&lt;=15*Period; 10](max:D) under opt</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>simulate 100 [&lt;=24*hour] { T, Window.Open+15, Room.HeatOn+17 }</formula>
+			<comment>1.5s</comment>
+		</query>
+		<query>
+			<formula>strategy opt24h = minE (D) [&lt;=24*hour]: &lt;&gt; t==24*hour</formula>
+			<comment>hybrid discretization step=1.0
+learning method=splitting, 100, 100, 100, 50   =&gt; 30000 runs in 232s
+</comment>
+		</query>
+		<query>
+			<formula>simulate 1 [&lt;=24*hour] { T, Window.Open+14, Room.HeatOn+16 } under opt24h</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>simulate 100 [&lt;=24*hour] { T, Window.Open+15, Room.HeatOn+17 } under opt24h</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>simulate 10 [&lt;=24*hour] { D } under opt24h</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E[&lt;=24*hour; 1000](max:D) under opt24h</formula>
+			<comment>in ~5s</comment>
+		</query>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>simulate 100 [&lt;=72*hour] { T, Window.Open+15, Room.HeatOn+17 } under opt24h</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>strategy opt72h = minE (D) [&lt;=72*hour]: &lt;&gt; t==72*hour</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>simulate 100 [&lt;=72*hour] { T, Window.Open+15, Room.HeatOn+17 } under opt72h</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E[&lt;=72*hour; 70](max:D) under opt72h</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula>E[&lt;=72*hour; 70](max:D)</formula>
+			<comment></comment>
+		</query>
+		<query>
+			<formula></formula>
+			<comment></comment>
+		</query>
+	</queries>
+</nta>
