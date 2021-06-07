@@ -5,6 +5,7 @@ VERIFYTA_PATH = "verifyta"
 TEMPLATE_FILE = "uppaal/model_template.xml"
 QUERY_FILE = "uppaal/query.q"
 MIN_GREEN = 4
+#  /home/trafiklab/uppaal/stratego8/bin-Linux/verifyta
 
 def intersection_plant(E, S, phase, MAX_ADD=2, MAX_REMOVE=2):
     """

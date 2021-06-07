@@ -3,7 +3,7 @@ from strategoutil import StrategoController
 
 class QueueLengthController(StrategoController):
     def __init__(self, templatefile, state_names):
-        super().__init__(templatefile)
+        super().__init__(templatefile, model_cfg_dict=None, interactive_bash=False)
         # variables to insert into the simulation *.xml file
         self.state_names = state_names
          # tag left in model_template.xml
@@ -25,6 +25,6 @@ class QueueLengthController(StrategoController):
 
         # parse output
         tpls = sutil.get_int_tuples(output)
-        result = sutil.get_duration_action(tpls, MAX_TIME=1000)
+        result = sutil.get_duration_action(tpls, max_time=1000)
         durations, actions = list(zip(*result)) 
         return durations, actions
