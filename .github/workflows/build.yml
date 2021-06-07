@@ -18,8 +18,11 @@ jobs:
           pip install -r requirements.txt
 
       - name: install verifyta
-        run:
+        run: echo "verifyta_installed" && ls -la $$ export PATH=/usr/local/bin/verifyta:$PATH
 
       - name: run RoomHeating
-        run: python RoomHeating_online_control.py
+        run: python RoomHeating/RoomHeating_online_control.py -v $VERIFYTA_PATH
+
+      - name: TrafficLight
+        run: python TrafficLight/example -v $VERIFYTA_PATH
 

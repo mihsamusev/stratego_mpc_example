@@ -1,11 +1,9 @@
 import random
+import argparse
+import os
+
 from model_interface import QueueLengthController
 
-VERIFYTA_PATH = "verifyta"
-TEMPLATE_FILE = "uppaal/model_template.xml"
-QUERY_FILE = "uppaal/query.q"
-MIN_GREEN = 4
-#  /home/trafiklab/uppaal/stratego8/bin-Linux/verifyta
 
 def intersection_plant(E, S, phase, MAX_ADD=2, MAX_REMOVE=2):
     """
@@ -29,9 +27,11 @@ def intersection_plant(E, S, phase, MAX_ADD=2, MAX_REMOVE=2):
 
     return E, S
 
-def run():
+def run(tempate_file, query_file, verifyta_path):
+    MIN_GREEN = 4
+
     controller = QueueLengthController(
-        templatefile=TEMPLATE_FILE,
+        templatefile=template_file,
         state_names=["E", "S", "phase"])
 
     # initial plant state
@@ -69,8 +69,8 @@ def run():
 
             # run a verifyta querry to simulate optimal strategy
             durations, phase_seq = controller.run(
-                queryfile=QUERY_FILE,
-                verifyta_path=VERIFYTA_PATH)
+                queryfile=query_file,
+                verifyta_path=verifyta_path)
 
             # switch phases if optimal solution changes phase
             # after minimum green time, stay otherwise
@@ -83,4 +83,17 @@ def run():
             phase = next_phase
 
 if __name__ == "__main__":
-    run()
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-t", "--template-file", default="uppaal/model_template.xml", 
+        help="Path to Stratego .xml file model template")
+    ap.add_argument("-q", "--query-file", default="uppaal/query.q",
+        help="Path to Stratego .q query file")
+    ap.add_argument("-v", "--verifyta-path", default="verifyta", help=
+        "Path to verifyta executable")
+    args = ap.parse_args()
+
+    base_path = os.path.dirname(os.path.realpath(__file__)) 
+    template_file = os.path.join(base_path, args.template_file)
+    query_file = os.path.join(base_path, args.query_file)
+
+    run(template_file, query_file, args.verifyta_path)

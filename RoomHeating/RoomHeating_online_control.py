@@ -1,5 +1,10 @@
-import strategoutil as sutil
+import os
+import argparse
+
 import yaml
+
+import strategoutil as sutil
+
 
 
 class MPCSetupRoomHeating(sutil.MPCsetup):
@@ -18,12 +23,27 @@ class MPCSetupRoomHeating(sutil.MPCsetup):
 
 
 if __name__ == "__main__":
+    ap = argparse.ArgumentParser()
+    ap.add_argument("-t", "--template-file", default="heatedroom-online.xml", 
+        help="Path to Stratego .xml file model template")
+    ap.add_argument("-q", "--query-file", default="heatedroom-online_query.q",
+        help="Path to Stratego .q query file")
+    ap.add_argument("-m", "--model-config", default="model_config.yaml",
+        help="Path to .yml model variables and initial conditions")
+    ap.add_argument("-l", "--learning-args", default="verifyta_config.yaml",
+        help="Path to .yml verifyta learining arguments")
+    ap.add_argument("-v", "--verifyta-path", default="verifyta", 
+        help="Path to verifyta executable")
+    args = ap.parse_args()
+
     # Define location of the relevant files and commands.
-    modelTemplatePath = "heatedroom-online.xml"
-    queryFilePath = "heatedroom-online_query.q"
-    modelConfigPath = "model_config.yaml"
-    learningConfigPath = "verifyta_config.yaml"
-    verifytaCommand = "/home/trafiklab/uppaal/stratego8_7/bin-Linux/verifyta"
+    base_path = os.path.dirname(os.path.realpath(__file__)) 
+    modelTemplatePath = os.path.join(base_path, args.template_file)
+    queryFilePath = os.path.join(base_path, args.query_file)
+    modelConfigPath = os.path.join(base_path, args.model_config)
+    learningConfigPath = os.path.join(base_path, args.learning_args)
+    verifytaCommand = args.verifyta_path
+    # "/home/trafiklab/uppaal/stratego8_8/bin-Linux/verifyta"
 
     # Whether to run in debug mode.
     debug = True
