@@ -3,11 +3,8 @@ Minimal examples running UPPAAL Stratego as a part of model predictive control M
 
 ## Installation
 
-This example uses helper library [strategoutil](https://github.com/mihsamusev/strategoutil.git)
 ```
-git clone https://github.com/mihsamusev/strategoutil.git
-cd strategoutil
-pip install -e .
+pip install -r requirements.txt
 ```
 
 ## Overview examples

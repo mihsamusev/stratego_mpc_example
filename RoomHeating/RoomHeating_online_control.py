@@ -4,17 +4,17 @@ import yaml
 
 class MPCSetupRoomHeating(sutil.MPCsetup):
     # Overriding parent method.
-    def create_query_file(self, queryfile, horizon, period, final, controller):
+    def create_query_file(self, horizon, period, final):
         """
         Create the query file for each step of the room heating model. Current
         content will be overwritten.
         """
-        with open(queryfile, "w") as f:
+        with open(self.queryfile, "w") as f:
             line1 = "strategy opt = minE (D) [<={}*{}]: <> (t=={})\n"
             f.write(line1.format(horizon, period, final))
             f.write("\n")
             line2 = "simulate 1 [<={}+1] {{ {} }} under opt\n"
-            f.write(line2.format(period, controller.print_var_names()))
+            f.write(line2.format(period, self.controller.print_var_names()))
 
 
 if __name__ == "__main__":
@@ -23,7 +23,7 @@ if __name__ == "__main__":
     queryFilePath = "heatedroom-online_query.q"
     modelConfigPath = "model_config.yaml"
     learningConfigPath = "verifyta_config.yaml"
-    verifytaCommand = "verifyta-stratego-8-7"
+    verifytaCommand = "/home/trafiklab/uppaal/stratego8_7/bin-Linux/verifyta"
 
     # Whether to run in debug mode.
     debug = True
@@ -38,7 +38,7 @@ if __name__ == "__main__":
     controller = MPCSetupRoomHeating(modelTemplatePath, queryfile=queryFilePath,
                                      model_cfg_dict=model_cfg_dict,
                                      learning_args=learning_cfg_dict,
-                                     verifytacommand=verifytaCommand, debug=debug)
+                                     verifytacommand=verifytaCommand, debug=debug, interactive_bash=False)
     
     # Define the MPC parameters.
     period = 15  # Period in time units (minutes).

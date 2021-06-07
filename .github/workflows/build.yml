@@ -1,0 +1,25 @@
+name: test-examples
+on: [push]
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - name: checkout
+        uses: actions/checkout@v2
+      
+      - name: Build using Python 3.8
+        uses: actions/setup-python@v2
+        with:
+          python-version: 3.8
+
+      - name: install dependencies [pip]
+        run: |
+          python -m pip install pip --upgrade pip
+          pip install -r requirements.txt
+
+      - name: install verifyta
+        run:
+
+      - name: run RoomHeating
+        run: python RoomHeating_online_control.py
+
