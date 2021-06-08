@@ -18,11 +18,11 @@ jobs:
           pip install -r requirements.txt
 
       - name: install verifyta
-        run: echo "verifyta_installed" && ls -la && export VERIFYTA_HOME=/usr/local/bin/verifyta
+        run: echo "verifyta_installed " && echo "gonna print your secret" && echo ${{ secrets.TEST_SECRET}}
 
       - name: run RoomHeating
-        run:  echo $VERIFYTA_HOME && python RoomHeating/RoomHeating_online_control.py -v $VERIFYTA_HOME
+        run:  python RoomHeating/RoomHeating_online_control.py -v stratego/bin-Linux/verifyta
 
       - name: TrafficLight
-        run: python TrafficLight/example -v $VERIFYTA_PATH
+        run: python TrafficLight/example -v stratego/bin-Linux/verifyta
 
