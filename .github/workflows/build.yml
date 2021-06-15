@@ -18,8 +18,6 @@ jobs:
           pip install -r requirements.txt
 
       - name: install verifyta
-        run:
+        run: echo "Not Implemented"
 
-      - name: run RoomHeating
-        run: python RoomHeating_online_control.py
 
