@@ -27,7 +27,7 @@ def intersection_plant(E, S, phase, MAX_ADD=2, MAX_REMOVE=2):
 
     return E, S
 
-def run(tempate_file, query_file, verifyta_path):
+def run(template_file, query_file, verifyta_path):
     MIN_GREEN = 4
 
     controller = QueueLengthController(

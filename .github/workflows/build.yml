@@ -21,8 +21,8 @@ jobs:
         run: echo "verifyta_installed"
 
       - name: run RoomHeating
-        run:  echo 'python RoomHeating/RoomHeating_online_control.py -v stratego/bin-Linux/verifyta'
+        run:  echo 'python RoomHeating/run.py -v stratego/bin-Linux/verifyta'
 
       - name: run TrafficLight 
-        run: echo 'python TrafficLight/example -v stratego/bin-Linux/verifyta'
+        run: echo 'python TrafficLight/run.py -v stratego/bin-Linux/verifyta'
 

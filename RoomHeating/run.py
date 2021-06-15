@@ -2,9 +2,7 @@ import os
 import argparse
 
 import yaml
-
 import strategoutil as sutil
-
 
 
 class MPCSetupRoomHeating(sutil.MPCsetup):
@@ -19,7 +17,7 @@ class MPCSetupRoomHeating(sutil.MPCsetup):
             f.write(line1.format(horizon, period, final))
             f.write("\n")
             line2 = "simulate 1 [<={}+1] {{ {} }} under opt\n"
-            f.write(line2.format(period, self.controller.print_var_names()))
+            f.write(line2.format(period, self.controller.get_var_names_as_string()))
 
 
 if __name__ == "__main__":

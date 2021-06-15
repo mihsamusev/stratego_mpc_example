@@ -10,18 +10,18 @@ const int Period = 15;
 const int Horizon = 10*Period;
 const int hour = 60;
 
-clock t = 0.0;
-clock T = 18.0;
-clock D = 0.0;
+clock t = 1425.0;
+clock T = 26.60004257990317;
+clock D = 7167.450140234193;
 clock x;
 
-clock w = 0.0;
-int i = 0;
+clock w = 1425.0;
+int i = 3;
 
 double A = Aclosed;
 
-int heatLoc = 0;
-int winLoc =0;
+int heatLoc = 1;
+int winLoc =1;
 
 /*
 double Tenv(double t){
