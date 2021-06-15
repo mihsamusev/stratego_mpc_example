@@ -24,7 +24,7 @@ python run.py -v <YOUR_VERIFYTA_PATH>
 To accomodate shown MPC loop, the project consists of couple of files:
 
 - `*.xml` template file describing UPPAAL model where changing variables commented out with known tags. Folder `uppaal/` contains original `model.xml`, and `model_template.xml` where variables are substitued by tags.
-- `model_interface.py` that leverages `StrategoController` class and functions of `strategoutil` to create the interface to exclusively interact with `model_template.xml`.
+- `uppaal/model_interface.py` that leverages `StrategoController` class and functions of `strategoutil` to create the interface to exclusively interact with `model_template.xml`.
 - `run.py` that puts it all together and showcases the MPC control loop
 - [optional] `*.yaml` configuration file with `verifyta` arguments, in the example default arguments are used
 - [optional] `*.q` file specifying Stratego query, in the example query inside `model_template.xml` will be used

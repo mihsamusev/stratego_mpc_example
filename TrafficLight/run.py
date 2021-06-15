@@ -2,7 +2,7 @@ import random
 import argparse
 import os
 
-from model_interface import QueueLengthController
+from uppaal.model_interface import QueueLengthController
 
 
 def intersection_plant(E, S, phase, MAX_ADD=2, MAX_REMOVE=2):
